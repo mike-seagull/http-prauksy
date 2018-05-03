@@ -7,13 +7,14 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
-	  "type": "git",
-	  "url": "https://gitlab.com/mike-seagull/http-proxy.git"
+    "type": "git",
+    "url": "https://gitlab.com/mike-seagull/http-proxy.git"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "express": "^4.16.3",
-    "http-proxy-middleware": "^0.18.0"
+    "http-proxy-middleware": "^0.18.0",
+    "morgan": "^1.9.0"
   }
 }
