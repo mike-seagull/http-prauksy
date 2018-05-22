@@ -1,7 +1,8 @@
 var express = require('express');
+const https = require('https');
+const fs = require('fs');
 var proxy = require('http-proxy-middleware');
 var morgan = require('morgan');
-var fs = require('fs')
 
 // proxy options
 var home_api_opts = {
@@ -27,10 +28,17 @@ function saveIp(req, resp, next) {
 	next();
 }
 
+const ssl_options = {
+	cert: fs.readFileSync(__dirname+'/sslcert/fullchain.pem'),
+	key: fs.readFileSync(__dirname+'/sslcert/privkey.pem')
+};
 
 var app = express();
 app.use(morgan('common'));
 app.use(saveIp);
+app.use(express.static(__dirname+'/static'));
 app.use('/api', home_api);
 app.use('/deploy', deploy);
-app.listen(3000);
+
+app.listen(3080);
+https.createServer(ssl_options, app).listen(3443);
