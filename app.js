@@ -60,8 +60,8 @@ const ssl_options = {
 
 var app = express();
 app.use(morgan('common'));
-app.use(saveIp);
-app.use(checkAuthorizedIp);
+//app.use(saveIp);
+//app.use(checkAuthorizedIp);
 app.use(express.static(__dirname+'/static'));
 app.use('/api', home_api);
 app.use('/deploy', deploy);
