@@ -8,7 +8,8 @@ const ipRangeCheck = require("ip-range-check");
 // proxy options
 var home_api_opts = {
 	target: 'http://127.0.0.1:3001', // target host
-	changeOrigin: true // needed for virtual hosted sites
+	changeOrigin: true, // needed for virtual hosted sites
+	xfwd: true
 };
 
 var deploy_opts = {
