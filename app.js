@@ -26,7 +26,7 @@ let app = express();
 app.use(morgan('common'));
 app.use('/api', home_api);
 
-const secure_app = (env.toUpperCase() == "prod") ? https.createServer(ssl_options, app) : null
+const secure_app = (env.toLowerCase() == "prod") ? https.createServer(ssl_options, app) : null
 
 module.exports = {
 	http: app,
