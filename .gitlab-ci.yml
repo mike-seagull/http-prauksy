@@ -29,7 +29,7 @@ deploy_to_gcp:
     # scp the binary
     - "sshpass -p \"$REMOTE_PASSWORD\" scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ./bin/http-proxy ${REMOTE_USER}@${REMOTE_SERVER}:/home/michaelhollister/bin/"
     # start the service
-    - "sshpass -p \"$REMOTE_PASSWORD\" ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_SERVER} \"/usr/bin/sudo systemctl start https-proxy\""
+    - "sshpass -p \"$REMOTE_PASSWORD\" ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_SERVER} \"/usr/bin/sudo systemctl start http-proxy\""
   when: on_success
   only: 
     - master
