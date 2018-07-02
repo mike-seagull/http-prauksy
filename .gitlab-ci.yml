@@ -36,10 +36,10 @@ deploy_to_gcp:
 
 notify_build_failure:
   stage: notify
-  script: "curl -X POST -d 'message=\"deploy failed\"' https://${HOME_API_USER}:${HOME_API_AUTHKEY}@michaelhollister.me/api/pushover"
+  script: "curl -X POST -d 'message=\"deploy failed\"' https://${HTTP_PROXY_USER}:${HTTP_PROXY_AUTHKEY}@michaelhollister.me/api/pushover"
   when: on_failure
 
 notify_build_success:
   stage: notify
-  script: "curl -X POST -d 'message=\"deploy successful\"' https://${HOME_API_USER}:${HOME_API_AUTHKEY}@michaelhollister.me/api/pushover"
+  script: "curl -X POST -d 'message=\"deploy successful\"' https://${HTTP_PROXY_USER}:${HTTP_PROXY_AUTHKEY}@michaelhollister.me/api/pushover"
   when: on_success
