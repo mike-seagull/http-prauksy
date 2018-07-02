@@ -19,10 +19,6 @@ install_dependencies:
     paths:
       - node_modules/
 
-run_tests:
-  stage: test
-  script: "npm test"
-
 deploy_to_gcp:
   stage: deploy
   script:
