@@ -21,6 +21,9 @@ install_dependencies:
 
 deploy_to_gcp:
   stage: deploy
+  environment:
+    name: "production"
+    url: "https://michaelhollister.me"
   script:
     - "npm run bundle"
     - "sshpass -V"

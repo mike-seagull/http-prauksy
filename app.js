@@ -18,7 +18,7 @@ var home_api = proxy(home_api_opts);
 
 const ssl_options = (env.toLowerCase() == "prod") ? {
 	cert: fs.readFileSync('/home/michaelhollister/sslcert/fullchain.pem'),
-	key: fs.readFileSync('/home/michaelhollister/sslcert/sslcert/privkey.pem')
+	key: fs.readFileSync('/home/michaelhollister/sslcert/privkey.pem')
 } : null;
 
 let app = express();
