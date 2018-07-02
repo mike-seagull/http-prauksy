@@ -1,0 +1,49 @@
+image: node:8.11-stretch
+
+stages:
+  - build
+  - deploy
+  - notify
+
+cache:
+  paths:
+    - node_modules/
+
+before_script:
+ - "apt-get update -qq && apt-get install -y -qq sshpass curl"
+
+install_dependencies:
+  stage: build
+  script: "npm install"
+  artifacts:
+    paths:
+      - node_modules/
+
+run_tests:
+  stage: test
+  script: "npm test"
+
+deploy_to_gcp:
+  stage: deploy
+  script:
+    - "npm run bundle"
+    - "sshpass -V"
+    # stop the service
+    - "sshpass -p \"$REMOTE_PASSWORD\" ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_SERVER} \"/usr/bin/sudo systemctl stop http-proxy\""
+    # scp the binary
+    - "sshpass -p \"$REMOTE_PASSWORD\" scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ./bin/http-proxy ${REMOTE_USER}@${REMOTE_SERVER}:/home/michaelhollister/bin/"
+    # start the service
+    - "sshpass -p \"$REMOTE_PASSWORD\" ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_SERVER} \"/usr/bin/sudo systemctl start https-proxy\""
+  when: on_success
+  only: 
+    - master
+
+notify_build_failure:
+  stage: notify
+  script: "curl -X POST -d 'message=\"deploy failed\"' https://${HOME_API_USER}:${HOME_API_AUTHKEY}@michaelhollister.me/api/pushover"
+  when: on_failure
+
+notify_build_success:
+  stage: notify
+  script: "curl -X POST -d 'message=\"deploy successful\"' https://${HOME_API_USER}:${HOME_API_AUTHKEY}@michaelhollister.me/api/pushover"
+  when: on_success
