@@ -9,9 +9,6 @@ cache:
   paths:
     - node_modules/
 
-before_script:
- - "apt-get update -qq && apt-get install -y -qq sshpass curl"
-
 install_dependencies:
   stage: build
   script: "npm install"
@@ -25,12 +22,14 @@ deploy_to_gcp:
     name: "production"
     url: "https://michaelhollister.me"
   script:
+    - "apt-get update -qq && apt-get install -y -qq sshpass"
     - "npm run bundle"
     - "sshpass -V"
     # stop the service
     - "sshpass -p \"$REMOTE_PASSWORD\" ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_SERVER} \"/usr/bin/sudo systemctl stop http-proxy\""
     # scp the binary
-    - "sshpass -p \"$REMOTE_PASSWORD\" scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ./bin/http-proxy ${REMOTE_USER}@${REMOTE_SERVER}:/home/michaelhollister/bin/"
+    - "sshpass -p \"$REMOTE_PASSWORD\" scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ./bin/http-proxy ${REMOTE_USER}@${REMOTE_SERVER}:/usr/local/bin/http-proxy"
+    - "sshpass -p \"$REMOTE_PASSWORD\" ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_SERVER} \"/bin/chmod +x /usr/local/bin/http-proxy\""
     # start the service
     - "sshpass -p \"$REMOTE_PASSWORD\" ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_SERVER} \"/usr/bin/sudo systemctl start http-proxy\""
   when: on_success
@@ -39,10 +38,14 @@ deploy_to_gcp:
 
 notify_build_failure:
   stage: notify
-  script: "curl -X POST -d 'message=\"deploy failed\"' https://${HTTP_PROXY_USER}:${HTTP_PROXY_AUTHKEY}@michaelhollister.me/api/pushover"
+  script:
+    - "apt-get update -qq && apt-get install -y -qq curl"
+    - "curl -X POST -d 'message=\"deploy failed\"' https://${HTTP_PROXY_USER}:${HTTP_PROXY_AUTHKEY}@michaelhollister.me/api/pushover"
   when: on_failure
 
 notify_build_success:
   stage: notify
-  script: "curl -X POST -d 'message=\"deploy successful\"' https://${HTTP_PROXY_USER}:${HTTP_PROXY_AUTHKEY}@michaelhollister.me/api/pushover"
+  script:
+    - "apt-get update -qq && apt-get install -y -qq curl"
+    - "curl -X POST -d 'message=\"deploy successful\"' https://${HTTP_PROXY_USER}:${HTTP_PROXY_AUTHKEY}@michaelhollister.me/api/pushover"
   when: on_success
