@@ -12,9 +12,14 @@ var home_api_opts = {
 	changeOrigin: true, // needed for virtual hosted sites
 	xfwd: true
 };
+var wss_opts = {
+	target: 'http://127.0.0.1:3002',
+	ws: true
+}
 
 // create the proxy (without context)
 var home_api = proxy(home_api_opts);
+var wss = proxy('/ws', { target: 'http://127.0.0.1:3002', ws: true});
 
 const ssl_options = (env.toLowerCase() == "prod") ? {
 	cert: fs.readFileSync('/home/michaelhollister/sslcert/fullchain.pem'),
@@ -25,10 +30,15 @@ let app = express();
 
 app.use(morgan('common'));
 app.use('/api', home_api);
+app.use(wss)
 
 const secure_app = (env.toLowerCase() == "prod") ? https.createServer(ssl_options, app) : null
 
 module.exports = {
 	http: app,
-	https: secure_app
+	https: secure_app,
+	proxies: {
+		home_api: home_api,
+		wss: wss
+	}
 }
