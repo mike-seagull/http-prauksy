@@ -25,7 +25,8 @@ const ssl_options = (env.toLowerCase() == "prod") ? {
 	cert: fs.readFileSync('/usr/local/etc/sslcert/fullchain.pem'),
 	key: fs.readFileSync('/usr/local/etc/sslcert/privkey.pem')
 } : null;
-
+let static_dir = (env.toLowerCase() == "prod") ? "/usr/local/etc/sslcert/static" : __dirname+'/static';
+app.use(express.static(static_dir));
 let app = express();
 
 app.use(morgan('common'));
