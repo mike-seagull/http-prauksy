@@ -22,10 +22,10 @@ var home_api = proxy(home_api_opts);
 var wss = proxy('/ws', { target: 'http://127.0.0.1:3002', ws: true});
 
 const ssl_options = (env.toLowerCase() == "prod") ? {
-	cert: fs.readFileSync('/usr/local/etc/sslcert/fullchain.pem'),
-	key: fs.readFileSync('/usr/local/etc/sslcert/privkey.pem')
+	cert: fs.readFileSync('/usr/local/etc/http-proxy/sslcert/fullchain.pem'),
+	key: fs.readFileSync('/usr/local/etc/http-proxy/sslcert/privkey.pem')
 } : null;
-let static_dir = (env.toLowerCase() == "prod") ? "/usr/local/etc/sslcert/static" : __dirname+'/static';
+let static_dir = (env.toLowerCase() == "prod") ? "/usr/local/etc/http-proxy/static" : __dirname+'/static';
 app.use(express.static(static_dir));
 let app = express();
 
