@@ -26,13 +26,12 @@ const ssl_options = (env.toLowerCase() == "prod") ? {
 	key: fs.readFileSync('/usr/local/etc/http-proxy/sslcert/privkey.pem')
 } : null;
 let static_dir = (env.toLowerCase() == "prod") ? "/usr/local/etc/http-proxy/static" : __dirname+'/static';
-app.use(express.static(static_dir));
 let app = express();
 
 app.use(morgan('common'));
 app.use('/api', home_api);
 app.use(wss)
-
+app.use(express.static(static_dir));
 const secure_app = (env.toLowerCase() == "prod") ? https.createServer(ssl_options, app) : null
 
 module.exports = {
