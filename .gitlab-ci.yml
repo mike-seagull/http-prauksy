@@ -26,9 +26,9 @@ deploy_to_gcp:
     # setup sshkey
     - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client git -y )'
     - eval "$(ssh-agent -s)"
-    - ssh-add - <<< "$SSH_PRIVATE_KEY"
+    - "echo \"$SSH_PRIVATE_KEY\" | ssh-add -"
     # add known host
-    - echo "$SSH_SERVER_HOSTKEYS" > ~/.ssh/known_hosts'
+    - echo "$SSH_SERVER_HOSTKEYS" > ~/.ssh/known_hosts
     - chmod 644 ~/.ssh/known_hosts
     # stop the service
     - "ssh ${REMOTE_USER}@${REMOTE_SERVER} \"/usr/bin/sudo systemctl stop http-proxy\""
