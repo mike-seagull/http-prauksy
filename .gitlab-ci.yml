@@ -29,8 +29,7 @@ deploy_to_gcp:
     - echo -e "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
     - chmod 600 ~/.ssh/id_rsa
     # add known host
-    - echo "$SSH_SERVER_HOSTKEYS" > ~/.ssh/known_hosts
-    - chmod 644 ~/.ssh/known_hosts
+    - ssh-keyscan $REMOTE_SERVER | sort -u - ~/.ssh/known_hosts -o ~/.ssh/known_hosts
     # stop the service
     - "ssh ${REMOTE_USER}@${REMOTE_SERVER} \"/usr/bin/sudo systemctl stop http-proxy\""
     # scp the binary
