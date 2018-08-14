@@ -26,7 +26,7 @@ deploy_to_gcp:
     # setup sshkey
     - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client git -y )'
     - eval "$(ssh-agent -s)"
-    - ssh-add < (echo "$SSH_PRIVATE_KEY")
+    - ssh-add - <<< "$SSH_PRIVATE_KEY"
     # add known host
     - echo "$SSH_SERVER_HOSTKEYS" > ~/.ssh/known_hosts'
     - chmod 644 ~/.ssh/known_hosts
