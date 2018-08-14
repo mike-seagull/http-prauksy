@@ -25,10 +25,9 @@ deploy_to_gcp:
     - "npm run bundle"
     # setup sshkey
     - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client git -y )'
-    - "eval $(ssh-agent -s)"
-    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
-    - mkdir -p ~/.ssh
-    - chmod 700 ~/.ssh
+    - eval "$(ssh-agent -s)"
+    - ssh-add < (echo "$SSH_PRIVATE_KEY")
+    # add known host
     - echo "$SSH_SERVER_HOSTKEYS" > ~/.ssh/known_hosts'
     - chmod 644 ~/.ssh/known_hosts
     # stop the service
