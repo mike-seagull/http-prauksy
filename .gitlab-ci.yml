@@ -22,16 +22,22 @@ deploy_to_gcp:
     name: "production"
     url: "https://michaelhollister.me"
   script:
-    - "apt-get update -qq && apt-get install -y -qq sshpass"
     - "npm run bundle"
-    - "sshpass -V"
+    # setup sshkey
+    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client git -y )'
+    - "eval $(ssh-agent -s)"
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - echo "$SSH_SERVER_HOSTKEYS" > ~/.ssh/known_hosts'
+    - chmod 644 ~/.ssh/known_hosts
     # stop the service
-    - "sshpass -p \"$REMOTE_PASSWORD\" ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_SERVER} \"/usr/bin/sudo systemctl stop http-proxy\""
+    - "ssh ${REMOTE_USER}@${REMOTE_SERVER} \"/usr/bin/sudo systemctl stop http-proxy\""
     # scp the binary
-    - "sshpass -p \"$REMOTE_PASSWORD\" scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ./bin/http-proxy ${REMOTE_USER}@${REMOTE_SERVER}:/usr/local/bin/http-proxy"
-    - "sshpass -p \"$REMOTE_PASSWORD\" ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_SERVER} \"/bin/chmod +x /usr/local/bin/http-proxy\""
+    - "scp ./bin/http-proxy ${REMOTE_USER}@${REMOTE_SERVER}:/usr/local/bin/http-proxy"
+    - "ssh ${REMOTE_USER}@${REMOTE_SERVER} \"/bin/chmod +x /usr/local/bin/http-proxy\""
     # start the service
-    - "sshpass -p \"$REMOTE_PASSWORD\" ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_SERVER} \"/usr/bin/sudo systemctl start http-proxy\""
+    - "ssh ${REMOTE_USER}@${REMOTE_SERVER} \"/usr/bin/sudo systemctl start http-proxy\""
   when: on_success
   only: 
     - master
