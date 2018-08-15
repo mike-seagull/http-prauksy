@@ -3,8 +3,16 @@ const https = require('https');
 const fs = require('fs');
 const proxy = require('http-proxy-middleware');
 const morgan = require('morgan');
+const path = require('path');
+const moment = require('moment-timezone');
 
 const env = process.env.SERVER_ENV || "dev"
+
+let log = (env.toLowerCase() == "prod") ? "/var/log/access.log" : path.join(__dirname, 'logs', 'access.log');
+morgan.token('date', (req, res, tz) => {
+	return moment().tz(tz).format('DD/MMM/YYYY:HH:mm:ss ZZ'); // fix local time
+})
+morgan.format('localtz', ':remote-addr - :remote-user [:date[America/Chicago]] ":method :url" HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent"');
 
 // proxy options
 var home_api_opts = {
@@ -28,7 +36,7 @@ const ssl_options = (env.toLowerCase() == "prod") ? {
 let static_dir = (env.toLowerCase() == "prod") ? "/usr/local/etc/http-proxy/static" : __dirname+'/static';
 let app = express();
 
-app.use(morgan('common'));
+app.use(morgan("localtz", {stream: fs.createWriteStream(log, {flags: 'a'})}));
 app.use('/api', home_api);
 app.use(wss)
 app.use(express.static(static_dir));
