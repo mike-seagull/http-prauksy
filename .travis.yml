@@ -5,7 +5,7 @@ services:
 env:
 - SH="docker exec -t http-proxy bash -c"
 before_install:
-- docker run --detach --name http-proxy -v $(pwd):/travis -w /travis node:8.11-stretch-slim
+- docker run --detach --name http-proxy -v $(pwd):/travis -w /travis node:8-stretch-slim
   tail -f /dev/null
 - docker ps
 install:
