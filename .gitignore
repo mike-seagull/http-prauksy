@@ -60,3 +60,4 @@ typings/
 .next
 
 bin/http-proxy
+.travis/secret.txt

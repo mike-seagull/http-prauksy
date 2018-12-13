@@ -1,0 +1,32 @@
+language: node_js
+sudo: required
+services:
+- docker
+env:
+- SH="docker exec -t http-proxy bash -c"
+before_install:
+- docker run --detach --name http-proxy -v $(pwd):/travis -w /travis node:8.11-stretch-slim
+  tail -f /dev/null
+- docker ps
+install:
+- npm install
+script: skip
+after_failure:
+- curl -X POST -d 'message="http-proxy build failed"' https://${HOME_API_USER}:${HOME_API_AUTHKEY}@michaelhollister.me/api/pushover
+after_success:
+- curl -X POST -d 'message="http-proxy build successful"' https://${HOME_API_USER}:${HOME_API_AUTHKEY}@michaelhollister.me/api/pushover
+before_deploy:
+- openssl aes-256-cbc -K $encrypted_50a234098985_key -iv $encrypted_50a234098985_iv -in .travis/secret.txt.enc -out secret.txt -d
+- $SH "npm run bundle"
+- which ssh-agent || ( sudo apt-get update -y && apt-get install openssh-client git
+  -y )
+- mkdir -p ~/.ssh
+- mv ~/.ssh/id_rsa
+- sudo chmod 600 ~/.ssh/id_rsa
+- ssh-keyscan -H $REMOTE_SERVER > ~/.ssh/known_hosts
+deploy:
+  skip_cleanup: true
+  provider: script
+  script: bash .travis/deploy.sh
+  on:
+    branch: master
