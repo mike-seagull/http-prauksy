@@ -12,9 +12,9 @@ install:
 - npm install
 script: skip
 after_failure:
-- curl -X POST -d 'message="http-proxy build failed"' https://${HOME_API_USER}:${HOME_API_AUTHKEY}@michaelhollister.me/api/pushover
+- curl -X POST -d 'message="http-proxy build failed"' https://${HOME_API_USER}:${HOME_API_AUTHKEY}@${REMOTE_SERVER}/api/pushover
 after_success:
-- curl -X POST -d 'message="http-proxy build successful"' https://${HOME_API_USER}:${HOME_API_AUTHKEY}@michaelhollister.me/api/pushover
+- curl -X POST -d 'message="http-proxy build successful"' https://${HOME_API_USER}:${HOME_API_AUTHKEY}@${REMOTE_SERVER}/api/pushover
 before_deploy:
 - openssl aes-256-cbc -K $encrypted_50a234098985_key -iv $encrypted_50a234098985_iv -in .travis/secret.txt.enc -out secret.txt -d
 - $SH "npm run bundle"
