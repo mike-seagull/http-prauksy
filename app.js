@@ -30,10 +30,10 @@ var home_api = proxy(home_api_opts);
 var wss = proxy('/ws', { target: 'http://127.0.0.1:3002', ws: true});
 
 const ssl_options = (env.toLowerCase() == "prod") ? {
-	cert: fs.readFileSync('/usr/local/etc/http-proxy/sslcert/fullchain.pem'),
-	key: fs.readFileSync('/usr/local/etc/http-proxy/sslcert/privkey.pem')
+	cert: fs.readFileSync('/usr/local/etc/http-prauksy/sslcert/fullchain.pem'),
+	key: fs.readFileSync('/usr/local/etc/http-prauksy/sslcert/privkey.pem')
 } : null;
-let static_dir = (env.toLowerCase() == "prod") ? "/usr/local/etc/http-proxy/static" : __dirname+'/static';
+let static_dir = (env.toLowerCase() == "prod") ? "/usr/local/etc/http-prauksy/static" : __dirname+'/static';
 let app = express();
 
 app.use(morgan("localtz", {stream: fs.createWriteStream(log, {flags: 'a'})}));

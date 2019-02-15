@@ -5,11 +5,11 @@
   "main": "app.js",
   "scripts": {
     "start": "node server.js",
-    "bundle": "./node_modules/pkg/lib-es5/bin.js -t node8-linux-x64 -o ./bin/http-proxy ./server.js"
+    "bundle": "./node_modules/pkg/lib-es5/bin.js -t node8-linux-x64 -o ./bin/http-prauksy ./server.js"
   },
   "repository": {
     "type": "git",
-    "url": "https://gitlab.com/mike-seagull/http-proxy.git"
+    "url": "https://github.com/mike-seagull/http-prauksy.git"
   },
   "author": "",
   "license": "ISC",
