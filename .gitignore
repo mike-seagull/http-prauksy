@@ -61,3 +61,6 @@ typings/
 
 bin/http-proxy
 .travis/secret.txt
+
+# mac file
+.DS_Store
