@@ -34,7 +34,7 @@ const ssl_options = (env.toLowerCase() == "prod") ? {
 	cert: fs.readFileSync('/usr/local/etc/http-prauksy/sslcert/fullchain.pem'),
 	key: fs.readFileSync('/usr/local/etc/http-prauksy/sslcert/privkey.pem')
 } : null;
-let static_dir = (env.toLowerCase() == "prod") ? "/usr/local/etc/http-prauksy/static" : __dirname+'/static';
+let static_dir = (["prod", "test"].indexOf(env.toLowerCase() >= 0)) ? "/usr/local/etc/http-prauksy/static" : __dirname+'/static';
 let app = express();
 
 app.use(morgan("localtz", {stream: fs.createWriteStream(log, {flags: 'a'})}));
