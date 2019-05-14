@@ -8,7 +8,7 @@ const moment = require('moment-timezone');
 
 const env = process.env.SERVER_ENV || "dev"
 
-let log = (["prod", "test"].indexOf(env.toLowerCase() >= 0)) ? "/var/log/access.log" : path.join(__dirname, 'logs', 'access.log');
+let log = (["prod", "test"].indexOf(env.toLowerCase()) >= 0) ? "/var/log/access.log" : path.join(__dirname, 'logs', 'access.log');
 //let log = (env.toLowerCase() == "prod") ? "/var/log/access.log" : path.join(__dirname, 'logs', 'access.log');
 morgan.token('date', (req, res, tz) => {
 	return moment().tz(tz).format('DD/MMM/YYYY:HH:mm:ss ZZ'); // fix local time
@@ -34,7 +34,7 @@ const ssl_options = (env.toLowerCase() == "prod") ? {
 	cert: fs.readFileSync('/usr/local/etc/http-prauksy/sslcert/fullchain.pem'),
 	key: fs.readFileSync('/usr/local/etc/http-prauksy/sslcert/privkey.pem')
 } : null;
-let static_dir = (["prod", "test"].indexOf(env.toLowerCase() >= 0)) ? "/usr/local/etc/http-prauksy/static" : __dirname+'/static';
+let static_dir = (["prod", "test"].indexOf(env.toLowerCase()) >= 0) ? "/usr/local/etc/http-prauksy/static" : __dirname+'/static';
 let app = express();
 
 app.use(morgan("localtz", {stream: fs.createWriteStream(log, {flags: 'a'})}));
