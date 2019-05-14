@@ -8,7 +8,8 @@ const moment = require('moment-timezone');
 
 const env = process.env.SERVER_ENV || "dev"
 
-let log = (env.toLowerCase() == "prod") ? "/var/log/access.log" : path.join(__dirname, 'logs', 'access.log');
+let log = (["prod", "test"].indexOf(env.toLowerCase() >= 0) ? "/var/log/access.log" : path.join(__dirname, 'logs', 'access.log');
+//let log = (env.toLowerCase() == "prod") ? "/var/log/access.log" : path.join(__dirname, 'logs', 'access.log');
 morgan.token('date', (req, res, tz) => {
 	return moment().tz(tz).format('DD/MMM/YYYY:HH:mm:ss ZZ'); // fix local time
 })
