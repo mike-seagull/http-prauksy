@@ -25,6 +25,11 @@ var wss_opts = {
 	target: 'http://127.0.0.1:3002',
 	ws: true
 }
+var jenkins_opts = {
+	target: 'http://services.cgull.me:8080',
+	changeOrigin: true, // needed for virtual hosted sites
+	xfwd: true
+}
 
 // create the proxy (without context)
 var home_api = proxy(home_api_opts);
@@ -39,6 +44,7 @@ let app = express();
 
 app.use(morgan("localtz", {stream: fs.createWriteStream(log, {flags: 'a'})}));
 app.use('/api', home_api);
+app.use('/github-webhook', jenkins_opts)
 app.use(wss)
 app.use(express.static(static_dir));
 const secure_app = (env.toLowerCase() == "prod") ? https.createServer(ssl_options, app) : null
