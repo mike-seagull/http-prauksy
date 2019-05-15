@@ -9,7 +9,6 @@ const moment = require('moment-timezone');
 const env = process.env.SERVER_ENV || "dev"
 
 let log = (["prod", "test"].indexOf(env.toLowerCase()) >= 0) ? "/var/log/access.log" : path.join(__dirname, 'logs', 'access.log');
-//let log = (env.toLowerCase() == "prod") ? "/var/log/access.log" : path.join(__dirname, 'logs', 'access.log');
 morgan.token('date', (req, res, tz) => {
 	return moment().tz(tz).format('DD/MMM/YYYY:HH:mm:ss ZZ'); // fix local time
 })
@@ -26,16 +25,11 @@ var jenkins_opts = {
 	changeOrigin: true, // needed for virtual hosted sites
 	xfwd: true
 };
-var wss_opts = {
-	target: 'http://127.0.0.1:3002',
-	ws: true
-}
 
 
 // create the proxy (without context)
 var home_api = proxy(home_api_opts);
 var jenkins = proxy(jenkins_opts);
-//var wss = proxy('/ws', { target: 'http://127.0.0.1:3002', ws: true});
 
 const ssl_options = (env.toLowerCase() == "prod") ? {
 	cert: fs.readFileSync('/usr/local/etc/http-prauksy/sslcert/fullchain.pem'),
@@ -47,7 +41,6 @@ let app = express();
 app.use(morgan("localtz", {stream: fs.createWriteStream(log, {flags: 'a'})}));
 app.use('/api', home_api);
 app.use('/github-webhook/', jenkins);
-// app.use(wss)
 app.use(express.static(static_dir));
 const secure_app = (env.toLowerCase() == "prod") ? https.createServer(ssl_options, app) : null
 
@@ -57,6 +50,5 @@ module.exports = {
 	proxies: {
 		home_api: home_api,
 		jenkins: jenkins,
-		// wss: wss
 	}
 }
