@@ -57,6 +57,6 @@ module.exports = {
 	proxies: {
 		home_api: home_api,
 		jenkins: jenkins,
-		wss: wss
+		// wss: wss
 	}
 }
