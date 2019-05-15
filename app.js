@@ -7,6 +7,8 @@ const path = require('path');
 const moment = require('moment-timezone');
 
 const env = process.env.SERVER_ENV || "dev"
+const jenkins_proxy_username = process.env.JENKINS_USER || ""
+const jenkins_proxy_password = process.env.JENKINS_PASS || ""
 
 let log = (["prod", "test"].indexOf(env.toLowerCase()) >= 0) ? "/var/log/access.log" : path.join(__dirname, 'logs', 'access.log');
 morgan.token('date', (req, res, tz) => {
@@ -21,6 +23,7 @@ var home_api_opts = {
 	xfwd: true
 };
 var jenkins_opts = {
+	auth: jenkins_proxy_username+":"+jenkins_proxy_password,
 	target: 'http://services.cgull.me:8080', // target host
 	changeOrigin: true, // needed for virtual hosted sites
 	xfwd: true
