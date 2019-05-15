@@ -31,6 +31,7 @@ var wss_opts = {
 	ws: true
 }
 
+
 // create the proxy (without context)
 var home_api = proxy(home_api_opts);
 var jenkins = proxy(jenkins_opts);
@@ -46,7 +47,7 @@ let app = express();
 app.use(morgan("localtz", {stream: fs.createWriteStream(log, {flags: 'a'})}));
 app.use('/api', home_api);
 app.use('/github-webhook/', jenkins);
-//app.use(wss)
+app.use(wss)
 app.use(express.static(static_dir));
 const secure_app = (env.toLowerCase() == "prod") ? https.createServer(ssl_options, app) : null
 
