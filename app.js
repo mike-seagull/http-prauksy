@@ -63,9 +63,5 @@ const secure_app = (env.toLowerCase() == "prod") ? https.createServer(ssl_option
 
 module.exports = {
 	http: app,
-	https: secure_app,
-	proxies: {
-		home_api: home_api,
-		jenkins: jenkins,
-	}
+	https: secure_app
 }
