@@ -1,4 +1,5 @@
 const express = require('express');
+const basicAuth = require('express-basic-auth')
 const https = require('https');
 const fs = require('fs');
 const proxy = require('http-proxy-middleware');
@@ -23,7 +24,21 @@ var home_api_opts = {
 	xfwd: true
 };
 var jenkins_opts = {
-	auth: jenkins_proxy_username+":"+jenkins_proxy_password,
+	onProxyReq: (proxyReq, req, res) => {
+		// require basic auth for proxy but remove when sending the request
+		if (req.headers.authorization) {
+			let auth_header = req.headers.authorization.replace('Basic ','');
+			auth_header = new Buffer(auth_header, 'base64').toString('ascii')
+			let [username, password] = auth_header.split(":")
+			if (username === jenkins_proxy_username && password === jenkins_proxy_password) {
+				proxyReq.setHeader('Authorization', '');
+			} else {
+				res.status(401).send("Access Denied")
+			}
+		} else {
+			res.status(401).send("Access Denied")
+		}
+	},
 	target: 'http://services.cgull.me:8080', // target host
 	changeOrigin: true, // needed for virtual hosted sites
 	xfwd: true
