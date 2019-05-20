@@ -19,7 +19,7 @@ morgan.format('localtz', ':remote-addr - :remote-user [:date[America/Chicago]] "
 
 // proxy options
 var home_api_opts = {
-	target: 'http://127.0.0.1:3001', // target host
+	target: 'http://webserver.cgull.me:3001', // target host
 	changeOrigin: true, // needed for virtual hosted sites
 	xfwd: true
 };
