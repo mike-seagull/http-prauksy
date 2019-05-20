@@ -1,5 +1,4 @@
 const express = require('express');
-const basicAuth = require('express-basic-auth')
 const https = require('https');
 const fs = require('fs');
 const proxy = require('http-proxy-middleware');
